@@ -1,6 +1,6 @@
 # SERP Preview — Free Google-style search snippet editor
 
-A lightweight, self-contained, static SEO tool built by Md Mehedi Hasan for a Cloudflare Pages deployment and his developer portfolio.
+A lightweight, self-contained SEO tool built by Md Mehedi Hasan and published at https://seo-snippet-preview.pages.dev/ for his developer portfolio.
 
 ## Features
 - Instant Google-style title, meta description and URL previews.
@@ -25,5 +25,8 @@ Google may generate its own result titles and snippets. The width/length meter i
 - https://developers.google.com/search/docs/appearance/title-link
 - https://developers.google.com/search/docs/appearance/snippet
 
-## Deployment status
-Source files are ready for deployment; no live Cloudflare deployment is implied.
+## Live deployment
+- Website: https://seo-snippet-preview.pages.dev/
+- Hosting: Cloudflare Pages (Direct Upload; deployed 2026-11-23)
+- This first deployment uses Direct Upload, **not a Git-connected deployment**. GitHub commits will not trigger Cloudflare Pages automatically. Redeploy manually until a Git integration is configured.
+- Production HTTP 200 and HTML/CSS/JS loading verified after deployment.
