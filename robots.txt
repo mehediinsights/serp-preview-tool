@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://seo-snippet-preview.pages.dev/sitemap.xml
