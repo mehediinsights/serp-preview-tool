@@ -1,32 +1,42 @@
-# SERP Preview — Free Google-style search snippet editor
+# SERP Preview — Free Google SERP Preview Tool
 
-A lightweight, self-contained SEO tool built by Md Mehedi Hasan and published at https://seo-snippet-preview.pages.dev/ for his developer portfolio.
+Live site: https://seo-snippet-preview.pages.dev/  
+Author: [Md Mehedi Hasan](https://mehedihasan.work/)
+
+A lightweight, privacy-first browser tool for editing an SEO title, meta description and display URL with live Google-style desktop and mobile snippet previews. The preview is approximate: Google may rewrite titles and snippets for different queries.
 
 ## Features
-- Instant Google-style title, meta description and URL previews.
-- Desktop and mobile visual modes.
-- Approximate title pixel width (canvas-based) and meta-description character counter.
-- Copy `<title>` and meta description HTML snippets.
-- Accessible controls, responsive layout and user input handled as **text**, not HTML.
-- No backend, dependencies, cookies, external fonts or analytics.
-- Contextual author portfolio link: https://mehedihasan.work/
+- Live title, description, and URL preview; desktop/mobile switch.
+- Approximate title width and meta description length guidance (not official Google limits).
+- Copy-ready HTML meta tags; user inputs are rendered as text, not HTML.
+- Client-side operation; no backend, external fonts, tracking, or account required.
+- Short, accessible FAQ about what the preview does and does not do.
 
-## Deploy to Cloudflare Pages
-1. Visit https://dash.cloudflare.com/ and open **Workers & Pages**.
-2. Create a **Pages** project using **Direct Upload**.
-3. Drag in the `serp-preview-tool.zip` archive (or this folder), then deploy.
-4. Your Pages URL is assigned by Cloudflare. Replace generic project references and add a canonical URL only after the permanent URL is confirmed.
-5. Check the page on desktop/mobile and confirm the portfolio link and copy buttons work on the HTTPS deployment.
+## Live SEO and crawl configuration
+- Homepage canonical: `https://seo-snippet-preview.pages.dev/`.
+- `sitemap.xml` lists the single canonical homepage.
+- `robots.txt` allows crawling and links to the XML sitemap.
+- `404.html` enables actual HTTP 404 responses for unknown routes on Cloudflare Pages.
+- `WebApplication` JSON-LD includes the live URL, free-access status and author.
+- `_headers` contains security headers and a CSP hash for the inline JSON-LD.
+- `google89a2099889f25c35.html` must remain deployed to preserve Google Search Console ownership verification.
 
-The archive is packaged with `index.html` at its root (not nested within another folder).
+## Deployment
 
-## Google accuracy note
-Google may generate its own result titles and snippets. The width/length meter is an **editorial heuristic**, not an official Google pixel or character limit and not a guarantee of rendered results. See:
-- https://developers.google.com/search/docs/appearance/title-link
-- https://developers.google.com/search/docs/appearance/snippet
+This project is currently hosted on **Cloudflare Pages via Direct Upload**. This GitHub repository is a source mirror, **not** an automatic deployment integration.
 
-## Live deployment
-- Website: https://seo-snippet-preview.pages.dev/
-- Hosting: Cloudflare Pages (Direct Upload; deployed 2026-11-23)
-- This first deployment uses Direct Upload, **not a Git-connected deployment**. GitHub commits will not trigger Cloudflare Pages automatically. Redeploy manually until a Git integration is configured.
-- Production HTTP 200 and HTML/CSS/JS loading verified after deployment.
+To publish changes: create a ZIP containing the site files at its root (`index.html`, `404.html`, `sitemap.xml`, `robots.txt`, `_headers`, the Google verification file, and `assets/`), then open Cloudflare Dashboard → Workers & Pages → `seo-snippet-preview` → Create deployment → Production.
+
+**Do not remove the Google verification file.** If JSON-LD changes, recalculate the CSP hash in `_headers`; otherwise the browser might block the changed inline script.
+
+## Verification checklist
+
+After deploying, confirm that:
+- `/` returns 200, the live tool works in both preview modes, and title/description inputs are HTML-escaped.
+- `/sitemap.xml` returns 200 with an XML content type and one homepage `<loc>`.
+- `/robots.txt` returns 200 with a sitemap declaration.
+- A nonexistent URL returns HTTP 404 rather than the homepage.
+- The Google verification URL still serves the expected token.
+- Browser console has no application errors and the site has no horizontal overflow at 390px.
+
+Google Search Console property verification has succeeded using the HTML file. Sitemap submission and indexing are separate processes; submitting the sitemap does not guarantee crawling, indexing, or ranking.
