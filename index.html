@@ -11,19 +11,27 @@
   <meta property="og:url" content="https://seo-snippet-preview.pages.dev/">
   <meta property="og:title" content="Free Google SERP Preview Tool — Preview SEO Titles & Descriptions">
   <meta property="og:description" content="Preview SEO titles and meta descriptions, explore desktop and mobile layouts, and copy clean meta tags. Free, private, and no login needed.">
-  <meta property="og:image" content="https://seo-snippet-preview.pages.dev/assets/og-preview.svg">
+  <meta property="og:image" content="https://seo-snippet-preview.pages.dev/assets/og-preview.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Google SERP Preview Tool">
+  <meta name="twitter:description" content="Preview and edit SEO titles and descriptions locally, with desktop and mobile layouts.">
+  <meta name="twitter:image" content="https://seo-snippet-preview.pages.dev/assets/og-preview.png">
+  <meta name="twitter:image:alt" content="SERP Preview Tool — edit, preview and export SEO meta tags">
+  <meta property="og:image:alt" content="SERP Preview Tool — edit, preview and export SEO meta tags">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_US">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="stylesheet" href="/assets/styles.css">
   <title>Free Google SERP Preview Tool | Mehedi Hasan</title>
-  <script defer src="/assets/app.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Free Google SERP Preview Tool","applicationCategory":"SEOApplication","operatingSystem":"Any modern browser","description":"A free client-side visual preview of SEO titles, meta descriptions and URLs for desktop and mobile.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Md Mehedi Hasan","url":"https://mehedihasan.work/"},"url":"https://seo-snippet-preview.pages.dev/","isAccessibleForFree":true,"inLanguage":"en"}</script>
+  <script type="module" src="/assets/app.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Free Google SERP Preview Tool","applicationCategory":"UtilitiesApplication","operatingSystem":"Any modern browser","description":"A free client-side visual preview of SEO titles, meta descriptions and URLs for desktop and mobile.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Md Mehedi Hasan","url":"https://mehedihasan.work/"},"url":"https://seo-snippet-preview.pages.dev/","isAccessibleForFree":true,"inLanguage":"en","browserRequirements":"Requires JavaScript","softwareVersion":"2.0.0","featureList":["Desktop and mobile snippet previews","Client-side editing and optional local drafts","HTML meta tag export"],"image":"https://seo-snippet-preview.pages.dev/assets/og-preview.png"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="/" aria-label="SERP Preview Tool home">
+      <a class="brand" href="/" aria-label="SERPPreview home">
         <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none"><rect x="2" y="2" width="32" height="32" rx="10" fill="#2258EB"/><path d="M10 13H26M10 19H23M10 25H19" stroke="white" stroke-width="3" stroke-linecap="round"/></svg></span>
         <span>SERP<span class="brand-accent">Preview</span></span>
       </a>
@@ -48,6 +56,7 @@
           <div><span class="section-step">01 · INPUT</span><h2>Your search snippet</h2><p>Edit the content below to see changes instantly.</p></div>
           <button type="button" class="text-button" id="sampleBtn">Load example</button>
         </div>
+        <noscript><p class="notice">JavaScript is required for the interactive editor. The guidance and FAQ below remain available.</p></noscript>
         <div class="form-stack">
           <div class="field"><div class="label-row"><label for="pageTitle">SEO page title</label><span class="count" id="titleCount">0 characters</span></div>
             <input id="pageTitle" type="text" maxlength="300" value="Technical SEO & Web Development Services | Mehedi Hasan" autocomplete="off" spellcheck="true" aria-describedby="titleHint">
@@ -60,12 +69,17 @@
             <div class="field-note"><span id="descriptionHint">Length guidance — Google may show different text</span><strong id="descriptionStatus">—</strong></div>
           </div>
           <div class="field"><div class="label-row"><label for="pageUrl">Page URL</label><span class="optional">For preview only</span></div>
-            <input id="pageUrl" type="url" inputmode="url" value="https://mehedihasan.work/" placeholder="https://example.com/your-page" autocomplete="url" aria-describedby="urlHint">
-            <p class="field-help" id="urlHint">We never fetch your URL or send your input to a server.</p>
+            <input id="pageUrl" type="url" inputmode="url" value="https://mehedihasan.work/" maxlength="2048" placeholder="https://example.com/your-page" autocomplete="url" aria-describedby="urlHint">
+            <p class="field-help" id="urlHint">We never fetch your URL or send your input to a server. URL credentials are not supported.</p>
           </div>
           <div class="field"><div class="label-row"><label for="siteName">Site name <span class="optional">(optional)</span></label></div>
             <input id="siteName" type="text" maxlength="100" value="Mehedi Hasan" placeholder="Example Company" autocomplete="off">
           </div>
+        </div>
+        <div class="draft-tools" aria-label="Draft tools">
+          <label class="draft-option"><input type="checkbox" id="rememberDraft"> Remember this draft on this device</label>
+          <p class="field-help" id="draftHelp">Optional local browser storage. Do not save confidential content on shared devices.</p>
+          <button type="button" class="secondary-button tool-button" id="clearBtn">Clear fields &amp; saved draft</button>
         </div>
       </div>
 
@@ -77,16 +91,16 @@
         </div>
         <div class="preview-canvas" id="previewCanvas">
           <div class="serp-result" id="serpResult">
-            <div class="serp-top"><div class="serp-favicon" aria-hidden="true">M</div><div class="serp-origin"><div class="serp-site" id="previewSite">Mehedi Hasan</div><div class="serp-url" id="previewUrl">https://mehedihasan.work/</div></div><span class="serp-more" aria-hidden="true">⋮</span></div>
-            <div class="serp-title" id="previewTitle">Technical SEO & Web Development Services | Mehedi Hasan</div>
-            <div class="serp-description" id="previewDescription">Improve your website with full-stack development, technical SEO, and AI automation solutions by Mehedi Hasan. Explore services and real project work.</div>
+            <div class="serp-top"><div class="serp-favicon" aria-hidden="true">M</div><div class="serp-origin"><div class="serp-site" id="previewSite" dir="auto">Mehedi Hasan</div><div class="serp-url" id="previewUrl">https://mehedihasan.work/</div></div><span class="serp-more" aria-hidden="true">⋮</span></div>
+            <div class="serp-title" id="previewTitle" dir="auto">Technical SEO & Web Development Services | Mehedi Hasan</div>
+            <div class="serp-description" id="previewDescription" dir="auto">Improve your website with full-stack development, technical SEO, and AI automation solutions by Mehedi Hasan. Explore services and real project work.</div>
           </div>
         </div>
         <div class="preview-caveat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><p><strong>Important:</strong> Google can rewrite titles, choose descriptions from page content, and truncate based on device and query. This is a guide—not an exact screenshot or ranking prediction.</p></div>
         <div class="snippet-feedback" aria-live="polite" aria-atomic="true"><span class="feedback-dot" id="feedbackDot" aria-hidden="true"></span><span id="feedbackText">Add your title and description to get started.</span></div>
         <div class="copy-section"><div class="copy-heading"><h3>Ready-to-use HTML</h3><span>Place inside your page’s &lt;head&gt;</span></div>
           <pre class="code-preview"><code id="metaCode"></code></pre>
-          <div class="copy-actions"><button type="button" class="primary-button" id="copyTagsBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg> Copy meta tags</button><button type="button" class="secondary-button" id="copyTitleBtn">Copy title</button><button type="button" class="secondary-button" id="copyDescBtn">Copy description</button></div>
+          <div class="copy-actions"><button type="button" class="primary-button" id="copyTagsBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg> Copy meta tags</button><button type="button" class="secondary-button" id="copyTitleBtn">Copy title</button><button type="button" class="secondary-button" id="copyDescBtn">Copy description</button><button type="button" class="secondary-button" id="downloadBtn">Download HTML</button></div>
         </div>
       </div>
     </section>
@@ -98,18 +112,21 @@
       <div class="info-card"><span class="info-number">3</span><h3>Copy your meta tags</h3><p>Use the generated HTML in your site, then verify the actual search result later.</p></div>
     </section>
 
-    <section class="container guidance" aria-labelledby="guidance-title"><div><span class="section-step">GOOD TO KNOW</span><h2 id="guidance-title">A better snippet starts with clear, useful content.</h2><p>Write a distinct title that describes the page, and a helpful description that summarizes what visitors will find. Pixel and character counts are editing aids, not official Google character limits.</p></div><div class="guidance-links"><a href="https://developers.google.com/search/docs/appearance/title-link" target="_blank" rel="noopener noreferrer">Google title link guidance <span aria-hidden="true">↗</span></a><a href="https://developers.google.com/search/docs/appearance/snippet" target="_blank" rel="noopener noreferrer">Google snippet guidance <span aria-hidden="true">↗</span></a></div></section>
+    <section class="container guidance" aria-labelledby="guidance-title"><div><span class="section-step">GOOD TO KNOW</span><h2 id="guidance-title">A better snippet starts with clear, useful content.</h2><p>Write a distinct title that describes the page, and a helpful description that summarizes what visitors will find. Pixel and character counts are editing aids, not official Google character limits.</p></div><div class="guidance-links"><a href="https://developers.google.com/search/docs/appearance/title-link" target="_blank" rel="noopener noreferrer">Google title link guidance <span aria-hidden="true">↗</span></a><a href="https://developers.google.com/search/docs/appearance/snippet" target="_blank" rel="noopener noreferrer">Google snippet guidance <span aria-hidden="true">↗</span></a><a href="https://developers.google.com/search/docs/appearance/ai-features" target="_blank" rel="noopener noreferrer">Google AI search guidance <span aria-hidden="true">↗</span></a></div></section>
 
     <section class="container faq" aria-labelledby="faq-title">
       <div class="faq-intro"><span class="section-step">COMMON QUESTIONS</span><h2 id="faq-title">Google SERP preview questions</h2><p>Understand what a snippet preview can and cannot tell you.</p></div>
       <div class="faq-list">
         <div class="faq-item"><h3>What is a Google SERP preview tool?</h3><p>It shows an approximate preview of how a page title, URL, and meta description might appear in a Google text search result. It helps you edit the wording before publishing.</p></div>
         <div class="faq-item"><h3>Will Google display my exact SEO title and meta description?</h3><p>Not necessarily. Google may create a different title link or snippet using your page content, the search query, and other signals. This preview is not a guarantee of what searchers will see.</p></div>
-        <div class="faq-item"><h3>Does this tool check my live website or store my text?</h3><p>No. The preview runs in your browser using the text you enter. It does not fetch your page, check its index status, or send your title and description to a server.</p></div>
+        <div class="faq-item"><h3>Does this tool check my live website or store my text?</h3><p>The preview runs entirely in your browser. It does not fetch your page, check its index status, or transmit your input. If you explicitly enable Remember this draft, the text is saved in local browser storage until you clear it or disable that option.</p></div>
+        <div class="faq-item"><h3>Does this predict AI search answers or rankings?</h3><p>No. This is a conventional search snippet editing aid, not an AEO or GEO score, AI citation predictor, or ranking checker. Accurate content, crawlability and useful page information remain essential.</p></div>
+        <div class="faq-item"><h3>Can I preview non-English titles?</h3><p>Yes. Unicode text and right-to-left scripts are supported. Character counts use grapheme clusters when the browser supports them; pixel estimates depend on available fonts.</p></div>
+        <div class="faq-item"><h3>Is this an official Google tool?</h3><p>No. It is independently developed, free to use, and not affiliated with Google. The visual layout and editing guides are approximations.</p></div>
       </div>
     </section>
   </main>
-  <footer class="site-footer"><div class="container footer-inner"><div><strong>SERP<span class="brand-accent">Preview</span></strong><p>Free SEO snippet preview. Unofficial and not affiliated with Google.</p></div><div class="footer-credit">Designed & developed by <a href="https://mehedihasan.work/" target="_blank" rel="noopener noreferrer">Md Mehedi Hasan</a><span> · </span><a href="https://mehedihasan.work/" target="_blank" rel="noopener noreferrer">Full-Stack Development & Technical SEO</a></div></div></footer>
+  <footer class="site-footer"><div class="container footer-inner"><div><strong>SERP<span class="brand-accent">Preview</span></strong><p>Free SEO snippet preview. Unofficial and not affiliated with Google.</p></div><div class="footer-credit">Designed & developed by <a href="https://mehedihasan.work/" target="_blank" rel="noopener noreferrer">Md Mehedi Hasan</a><span> · </span><a href="https://mehedihasan.work/" target="_blank" rel="noopener noreferrer">Full-Stack Development & Technical SEO</a><span> · </span><a href="https://github.com/mehediinsights/serp-preview-tool" target="_blank" rel="noopener noreferrer">Source &amp; documentation</a></div></div></footer>
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>

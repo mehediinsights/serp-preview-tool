@@ -1,0 +1,27 @@
+{
+  "name": "serp-preview-tool",
+  "version": "2.0.0",
+  "description": "Privacy-first Google-style SERP snippet editor",
+  "scripts": {
+    "test": "node --test tests/unit.test.js",
+    "test:e2e": "playwright test",
+    "serve": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mehediinsights/serp-preview-tool.git"
+  },
+  "keywords": [],
+  "author": "Mehedi Hasan",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/mehediinsights/serp-preview-tool/issues"
+  },
+  "homepage": "https://github.com/mehediinsights/serp-preview-tool#readme",
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.1",
+    "@playwright/test": "1.65.1"
+  },
+  "private": true
+}

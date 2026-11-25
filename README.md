@@ -1,42 +1,64 @@
-# SERP Preview — Free Google SERP Preview Tool
+# SERP Preview Tool
 
-Live site: https://seo-snippet-preview.pages.dev/  
-Author: [Md Mehedi Hasan](https://mehedihasan.work/)
+A privacy-first, client-side SEO snippet editor. Preview approximate Google-style search results, edit titles and descriptions, compare desktop and mobile layouts, and export HTML meta tags.
 
-A lightweight, privacy-first browser tool for editing an SEO title, meta description and display URL with live Google-style desktop and mobile snippet previews. The preview is approximate: Google may rewrite titles and snippets for different queries.
+**Live demo:** https://seo-snippet-preview.pages.dev/
+**Developer:** [Mehedi Hasan](https://mehedihasan.work/)
 
 ## Features
-- Live title, description, and URL preview; desktop/mobile switch.
-- Approximate title width and meta description length guidance (not official Google limits).
-- Copy-ready HTML meta tags; user inputs are rendered as text, not HTML.
-- Client-side operation; no backend, external fonts, tracking, or account required.
-- Short, accessible FAQ about what the preview does and does not do.
+- Real-time preview, Unicode-aware character counts and approximate width guidance.
+- Desktop and mobile layouts, RTL text, keyboard controls and responsive design.
+- Safe text rendering, URL validation, HTML escaping, clipboard and downloadable meta tags.
+- Optional local draft persistence and a clear-draft control; no account, tracking, API or backend.
+- Crawlable help content, canonical URL, sitemap, social metadata and WebApplication structured data.
 
-## Live SEO and crawl configuration
-- Homepage canonical: `https://seo-snippet-preview.pages.dev/`.
-- `sitemap.xml` lists the single canonical homepage.
-- `robots.txt` allows crawling and links to the XML sitemap.
-- `404.html` enables actual HTTP 404 responses for unknown routes on Cloudflare Pages.
-- `WebApplication` JSON-LD includes the live URL, free-access status and author.
-- `_headers` contains security headers and a CSP hash for the inline JSON-LD.
-- `google89a2099889f25c35.html` must remain deployed to preserve Google Search Console ownership verification.
+Google can rewrite titles and descriptions; this tool is not an official Google product, ranking checker, AI citation predictor or exact SERP simulator.
+
+## Run locally
+Requires Node.js 24 or compatible modern Node.js. No runtime npm dependencies.
+
+```sh
+npm ci
+npm run serve
+```
+
+Open http://127.0.0.1:49387/. The development server applies the same security headers as the Cloudflare configuration.
+
+## Quality checks
+
+```sh
+npm test
+npx playwright install chromium
+npm run test:e2e
+npm run build
+```
+
+Unit tests cover Unicode, URLs, escaping and draft validation. Browser tests cover live editing, device mode, storage, export, keyboard interaction, responsive widths, accessibility and HTTP assets. GitHub Actions runs the same checks. Automated accessibility tests are not a complete WCAG conformance audit.
+
+## Architecture
+- `index.html`: semantic page and metadata.
+- `assets/core.js`: pure, testable validation and serialization helpers.
+- `assets/app.js`: browser state, rendering and interaction.
+- `assets/styles.css`: responsive presentation.
+- `tests/`: Node and Playwright regression tests.
+- `scripts/`: local server and release builder.
+
+The application intentionally uses native JavaScript modules, HTML and CSS rather than introducing a framework for a small tool.
+
+## Privacy and security
+Inputs are processed locally; the editor never fetches an entered URL or transmits its values. Draft storage is opt-in, remains on the device and can be cleared. Do not save confidential text on shared devices. No runtime third-party scripts or fonts. CSP, safe DOM rendering, URL protocol checks and HTML escaping provide defense in depth.
 
 ## Deployment
+Cloudflare Pages currently uses Direct Upload; this GitHub repository is not an automatic deploy integration.
 
-This project is currently hosted on **Cloudflare Pages via Direct Upload**. This GitHub repository is a source mirror, **not** an automatic deployment integration.
+Run `npm run build` and upload only the contents of `dist/` through Cloudflare Pages. Preserve the Google verification file and canonical URL. If inline JSON-LD changes, update its CSP SHA-256 hash in `_headers`. Verify the live URL, sitemap, real 404, security headers, Google verification file and browser functions after deployment.
 
-To publish changes: create a ZIP containing the site files at its root (`index.html`, `404.html`, `sitemap.xml`, `robots.txt`, `_headers`, the Google verification file, and `assets/`), then open Cloudflare Dashboard → Workers & Pages → `seo-snippet-preview` → Create deployment → Production.
+For production smoke tests:
+```sh
+TEST_URL=https://seo-snippet-preview.pages.dev npm run test:e2e
+```
 
-**Do not remove the Google verification file.** If JSON-LD changes, recalculate the CSP hash in `_headers`; otherwise the browser might block the changed inline script.
+Previous deploys can be restored through the Cloudflare Pages deployment history.
 
-## Verification checklist
-
-After deploying, confirm that:
-- `/` returns 200, the live tool works in both preview modes, and title/description inputs are HTML-escaped.
-- `/sitemap.xml` returns 200 with an XML content type and one homepage `<loc>`.
-- `/robots.txt` returns 200 with a sitemap declaration.
-- A nonexistent URL returns HTTP 404 rather than the homepage.
-- The Google verification URL still serves the expected token.
-- Browser console has no application errors and the site has no horizontal overflow at 390px.
-
-Google Search Console property verification has succeeded using the HTML file. Sitemap submission and indexing are separate processes; submitting the sitemap does not guarantee crawling, indexing, or ranking.
+## Limitations
+Text width is a visual approximation based on the browser and installed fonts. Google may select entirely different text. Search indexing, ranking, AI citations and full WCAG compliance are not guaranteed. See [Google Search documentation](https://developers.google.com/search/docs/appearance) and [WCAG 2.2](https://www.w3.org/TR/WCAG22/).

@@ -1,3 +1,4 @@
+import { charCount, sanitizeUrl, metaTags, DRAFT_KEY, parseDraft } from './core.js';
 (() => {
   'use strict';
   const byId = (id) => document.getElementById(id);
@@ -19,23 +20,11 @@
   let view = 'desktop';
   let toastTimer = null;
   const measure = document.createElement('canvas').getContext('2d');
-  const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(undefined, {granularity: 'grapheme'}) : null;
-  function charCount(text) { return segmenter ? Array.from(segmenter.segment(text)).length : Array.from(text).length; }
   function estimatePx(text) {
     if (!measure) return Math.round(charCount(text) * 10);
     measure.font = view === 'desktop' ? '20px Arial' : '19px Arial';
     return Math.round(measure.measureText(text).width);
   }
-  function sanitizeUrl(value) {
-    const raw = value.trim();
-    if (!raw) return {display:'example.com/page', valid:true, empty:true};
-    try {
-      const parsed = new URL(raw);
-      if (!['http:', 'https:'].includes(parsed.protocol) || !parsed.hostname.includes('.')) throw new Error('invalid');
-      return {display:parsed.hostname + (parsed.pathname === '/' ? '' : parsed.pathname) + parsed.search, valid:true, host:parsed.hostname};
-    } catch { return {display:'Enter a valid https:// URL', valid:false}; }
-  }
-  const xmlEscape = (text) => String(text).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   function setMeter(el, ratio, kind) {
     el.style.width = Math.min(100, Math.max(0, ratio * 100)) + '%';
     el.classList.toggle('warn', kind === 'warn');
@@ -58,7 +47,8 @@
     const titleChars = charCount(els.title.value);
     const descChars = charCount(els.description.value);
     const titlePx = estimatePx(title);
-    const titleGuidePx = view === 'desktop' ? 580 : 640; // Rough one-line desktop vs. two-line mobile guide
+    // Use the actual preview width; mobile has an approximate two-line budget.
+    const titleGuidePx = Math.round(els.previewTitle.clientWidth * (view === 'mobile' ? 2 : 1));
     const descGuideChars = 160;
     els.titleCount.textContent = `${titleChars} character${titleChars === 1 ? '' : 's'}`;
     els.descriptionCount.textContent = `${descChars} character${descChars === 1 ? '' : 's'}`;
@@ -67,18 +57,17 @@
     els.previewTitle.textContent = title || 'Your page title will appear here';
     els.previewDescription.textContent = desc || 'Your meta description preview will appear here. Add a useful summary of this page.';
     els.titleWidth.textContent = `${titlePx}px / ~${titleGuidePx}px`;
-    const ratioTitle = titlePx / titleGuidePx;
+    const ratioTitle = titleGuidePx > 0 ? titlePx / titleGuidePx : 0;
     setMeter(els.titleMeter, ratioTitle, ratioTitle > 1 ? 'over' : ratioTitle > .9 ? 'warn' : 'good');
     const ratioDesc = descChars / descGuideChars;
     setMeter(els.descriptionMeter, ratioDesc, ratioDesc > 1 ? 'over' : ratioDesc > .9 ? 'warn' : 'good');
     els.descriptionStatus.textContent = descChars > descGuideChars ? 'Longer than guide' : descChars < 70 ? 'Try more detail' : 'Within rough guide';
+    const favicon = document.querySelector('.serp-favicon');
+    favicon.textContent = (site || inputUrl.host || 'S').match(/^./u)?.[0]?.toUpperCase() || 'S';
     els.url.setAttribute('aria-invalid', String(!inputUrl.valid));
     const validTitle = title.length > 0;
     const validDesc = desc.length > 0;
-    const code = [
-      `<title>${xmlEscape(title)}</title>`,
-      `<meta name="description" content="${xmlEscape(desc)}">`
-    ].join('\n');
+    const code = metaTags(title, desc);
     els.metaCode.textContent = code;
     els.feedbackDot.classList.remove('good', 'warn');
     if (!validTitle || !validDesc) {
@@ -111,15 +100,56 @@
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => els.toast.classList.remove('visible'), 3200);
   }
-  for (const node of [els.title, els.description, els.url, els.site]) node.addEventListener('input', render);
-  els.desktop.addEventListener('click', () => setView('desktop'));
-  els.mobile.addEventListener('click', () => setView('mobile'));
+  const remember = byId('rememberDraft');
+  const fields = { title: els.title, description: els.description, url: els.url, site: els.site };
+  function persist() {
+    if (!remember.checked) return;
+    try {
+      const data = Object.fromEntries(Object.entries(fields).map(([k, node]) => [k, node.value]));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ version: 2, ...data, view }));
+    } catch { remember.checked = false; notify('Draft storage is unavailable on this browser.'); }
+  }
+  function removeDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); }
+    catch { notify('Browser storage could not be cleared. Check your browser settings.'); }
+  }
+  try {
+    const draft = parseDraft(localStorage.getItem(DRAFT_KEY));
+    if (draft) {
+      remember.checked = true;
+      for (const [k,node] of Object.entries(fields)) node.value = draft[k];
+      setView(draft.view);
+    }
+  } catch { /* The editor works without storage. */ }
+  remember.addEventListener('change', () => remember.checked ? persist() : removeDraft());
+  for (const node of Object.values(fields)) node.addEventListener('input', () => { render(); persist(); });
+  byId('clearBtn').addEventListener('click', () => {
+    for (const node of Object.values(fields)) node.value = '';
+    remember.checked = false;
+    removeDraft();
+    setView('desktop');
+    els.title.focus();
+    notify('Fields cleared.');
+  });
+  byId('downloadBtn').addEventListener('click', () => {
+    const url = URL.createObjectURL(new Blob([els.metaCode.textContent + '\n'], {type: 'text/plain;charset=utf-8'}));
+    const a = document.createElement('a');
+    a.href = url; a.download = 'seo-meta-tags.html';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    notify('Meta tag file prepared.');
+  });
+  if (typeof ResizeObserver === 'function') new ResizeObserver(render).observe(els.previewTitle);
+
+  els.desktop.addEventListener('click', () => { setView('desktop'); persist(); });
+  els.mobile.addEventListener('click', () => { setView('mobile'); persist(); });
   els.sample.addEventListener('click', () => {
     els.title.value = example.title;
     els.description.value = example.description;
     els.url.value = example.url;
     els.site.value = example.site;
     setView('desktop');
+    persist();
     notify('Example loaded');
   });
   els.copyTags.addEventListener('click', () => copy(els.metaCode.textContent, 'HTML meta tags copied'));
